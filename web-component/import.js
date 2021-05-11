@@ -6,7 +6,7 @@ class Importer {
         this.loader = new Loader();
     }
 
-    async #importModule(manifest, data, template) {
+    async _importModule(manifest, data, template) {
         let modulePath = `${manifest.path.getResolvedPath()}/${manifest.module}`;
         let module = { manifest, data, template };
         try {
@@ -17,7 +17,7 @@ class Importer {
         await this.loader.load(module, data, template);
     }
 
-    async #importManifest(path) {
+    async _importManifest(path) {
         let name = path.getName();
         let manifestPath = `${path}/manifest.json`;
         let manifest = {
@@ -41,7 +41,7 @@ class Importer {
         return manifest;
     }
 
-    async #importData(manifest) {
+    async _importData(manifest) {
         let dataPath = `${manifest.path}/${manifest.data}`;
         let data = await fetch(dataPath);
         if (data.ok) {
@@ -49,7 +49,7 @@ class Importer {
         } else return {};
     }
 
-    async #importTemplate(manifest) {
+    async _importTemplate(manifest) {
         let templatePath = `${manifest.path}/${manifest.template}`;
         let template = await fetch(templatePath);
         if (template.ok)
@@ -60,10 +60,10 @@ class Importer {
 
     async import(path) {
         path = new Path(path);
-        let manifest = await this.#importManifest(path);
-        let data = await this.#importData(manifest);
-        let template = await this.#importTemplate(manifest);
-        let module = await this.#importModule(manifest, data, template);
+        let manifest = await this._importManifest(path);
+        let data = await this._importData(manifest);
+        let template = await this._importTemplate(manifest);
+        let module = await this._importModule(manifest, data, template);
     }
 }
 

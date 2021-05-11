@@ -3,14 +3,14 @@ import WebComponent from "./web-component.js"
 export default class WASMWebComponent extends WebComponent {
     constructor() {
         super();
-        this.ffi_create       = this.#getMethod("create");
-        this.ffi_template     = this.#getMethod("template");
-        this.ffi_get_data     = this.#getMethod("get_data");
-        this.ffi_update_field = this.#getMethod("update_field");
-        this.ffi_on_loaded    = this.#getMethod("on_loaded");
+        this.ffi_create       = this._getMethod("create");
+        this.ffi_template     = this._getMethod("template");
+        this.ffi_get_data     = this._getMethod("get_data");
+        this.ffi_update_field = this._getMethod("update_field");
+        this.ffi_on_loaded    = this._getMethod("on_loaded");
     }
 
-    #getMethod(name) {
+    _getMethod(name) {
         let module = this.module.instance;
         let method = `${this.path}_${name}`;
             method = module[method];

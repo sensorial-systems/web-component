@@ -9,7 +9,7 @@ export default class MultiLoader {
         this.default    = new Loader();
     }
 
-    static #getType(module) {
+    static _getType(module) {
         try {
             if (module.instance["web_component_target_wasm"] || module.instance.default.name == "init")
                 return "WASM";
@@ -21,7 +21,7 @@ export default class MultiLoader {
     }
 
     async load(module, data, template) {
-        let type = MultiLoader.#getType(module);
+        let type = MultiLoader._getType(module);
              if (type == "WASM")       this.wasm.load(module, data, template);
         else if (type == "JAVASCRIPT") this.javascript.load(module, data, template);
         else                           this.default.load(module, data, template);

@@ -8,12 +8,12 @@ export default class WASMLoader extends Loader {
             var result = method.match(/components_web_(.*)_create/);
             if (result && result.length == 2) {
                 let componentName = "web-" + result[1];
-                this.#loadComponent(module, componentName, data, template);
+                this._loadComponent(module, componentName, data, template);
             }
         }
     }
 
-    #loadComponent(module, name, data, template) {
+    _loadComponent(module, name, data, template) {
         class LoadedWebComponent extends WASMWebComponent {}
         let path = ("components_" + name).replace(/-|\//g,"_");
         LoadedWebComponent.prototype.module = module;

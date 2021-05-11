@@ -16,21 +16,21 @@ export default class WebComponent extends HTMLElement {
     async onload() {}
 
     async connectedCallback() {
-        await this.#createTemplate();
-        await this.#createBindings();
+        await this._createTemplate();
+        await this._createBindings();
         this.onload(this.shadowRoot);
     }
 
-    async #createTemplate() {
+    async _createTemplate() {
         let content  = await this.getTemplate();
-        let template = this.#createTemplateFromString(content);
-        let node     = this.#createNodeFromTemplate(template);
+        let template = this._createTemplateFromString(content);
+        let node     = this._createNodeFromTemplate(template);
         this.shadowRoot.appendChild(node);
     }
 
     // Bindings
 
-    async #createBindings() {
+    async _createBindings() {
         this.data = await this.getData();
         let attributes = this.shadowRoot.host.attributes;
         this.data["attributes"] = {};
@@ -83,13 +83,13 @@ export default class WebComponent extends HTMLElement {
     }
 
     // Template creation.
-    #createTemplateFromString(string) {
+    _createTemplateFromString(string) {
         let innerDiv       = document.createElement("div");
         innerDiv.innerHTML = string;
         return innerDiv.firstChild;
     }
 
-    #createNodeFromTemplate(template) {
+    _createNodeFromTemplate(template) {
         let node = document.importNode(template.content, true);
         let div  = document.createElement("div");
         div.setAttribute("id", "vue");
