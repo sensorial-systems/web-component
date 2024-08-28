@@ -1,0 +1,11 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/web-component"
+]
+
+[workspace.dependencies]
+dioxus = { version = "0.5" }
+wasm-bindgen-futures = "0.4.0"
+web-sys = { version = "0.3", features = ["console", "Window", "Document", "Element"] }
+enum-as-inner = "0.6.0"

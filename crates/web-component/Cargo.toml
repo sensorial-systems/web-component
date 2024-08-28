@@ -1,0 +1,13 @@
+[package]
+name = "web-component"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+desktop = ["dioxus/desktop"]
+
+[dependencies]
+dioxus.workspace = true
+wasm-bindgen-futures.workspace = true
+web-sys.workspace = true
+enum-as-inner.workspace = true
