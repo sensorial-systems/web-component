@@ -41,6 +41,7 @@ impl Runner {
 
     #[cfg(not(feature = "desktop"))]
     pub fn run(&self, f: fn() -> Element) {
-        launch(f);
+        LaunchBuilder::web()
+            .launch(f);
     }
 }
