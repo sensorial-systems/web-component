@@ -9,6 +9,7 @@ desktop = ["dioxus/desktop"]
 
 [dependencies]
 dioxus.workspace = true
+dioxus-logger.workspace = true
 wasm-bindgen-futures.workspace = true
 web-sys.workspace = true
 enum-as-inner.workspace = true

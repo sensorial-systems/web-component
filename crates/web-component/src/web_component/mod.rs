@@ -1,6 +1,8 @@
 use crate::prelude::*;
 
 pub trait WebComponent: Sized + Clone + PartialEq + 'static {
+    type State;
+
     fn instance(state: Self) -> Signal<Self> {
         let mut component = use_signal(|| {
             let mut state = state.clone();
@@ -43,7 +45,7 @@ pub trait WebComponent: Sized + Clone + PartialEq + 'static {
         *self = state;
     }
     
-    fn render(component: Signal<Self>) -> Element;
+    fn render(component: Signal<Self>, state: Signal<Self::State>) -> Element;
 }
 
 #[macro_export]
@@ -52,7 +54,8 @@ macro_rules! expose_component {
         #[component]
         pub fn $name(props: $props) -> Element {
             let component = $props::instance(props);
-            WebComponent::render(component)
+            let state = use_signal(|| Default::default());
+            WebComponent::render(component, state)
         }
     };
 }

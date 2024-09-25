@@ -1,5 +1,7 @@
 pub mod prelude;
 
+pub use dioxus_logger as logger;
+
 pub mod web_component;
 pub mod resource;
 pub mod closure;
