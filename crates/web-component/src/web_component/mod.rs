@@ -54,7 +54,7 @@ macro_rules! expose_component {
         #[component]
         pub fn $name(props: $props) -> Element {
             let component = $props::instance(props);
-            let state = use_signal(|| Default::default());
+            let state = use_signal(|| component.read().clone().into());
             WebComponent::render(component, state)
         }
     };
