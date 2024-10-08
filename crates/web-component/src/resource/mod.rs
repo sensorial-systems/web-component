@@ -67,11 +67,10 @@ impl<T> Resource<T> {
         let state = self.state.clone();
         *state.blocking_lock() = ResourceState::Loading;
         wasm_bindgen_futures::spawn_local(async move {
-            if let Some(value) = future.await {
-                *state.lock().await = ResourceState::Loaded(value);
-            } else {
-                *state.lock().await = ResourceState::Unavailable;
-            }
+            *state.lock().await = future
+                .await
+                .map(ResourceState::Loaded)
+                .unwrap_or(ResourceState::Unavailable);
         })
     }
 
@@ -81,11 +80,10 @@ impl<T> Resource<T> {
         let state = self.state.clone();
         *state.blocking_lock() = ResourceState::Loading;
         spawn(async move {
-            if let Some(value) = future.await {
-                *state.lock().await = ResourceState::Loaded(value);
-            } else {
-                *state.lock().await = ResourceState::Unavailable;
-            }
+            *state.lock().await = future
+                .await
+                .map(ResourceState::Loaded)
+                .unwrap_or(ResourceState::Unavailable);
             component.write();
         });
     }
