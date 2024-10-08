@@ -1,31 +1,36 @@
 use crate::prelude::*;
 
-pub trait WebComponent: Sized + Clone + PartialEq + 'static {
-    type State;
+mod properties;
+pub use properties::*;
 
-    fn instance(state: Self) -> Signal<Self> {
-        let mut component = use_signal(|| {
-            let mut state = state.clone();
-            state.initialize();
-            state
-        });
-        use_effect(move || {
-            component.write().on_mount();
-            let id = component.write().id().clone();
-            if let Some(id) = id {
-                if let Some(window) = web_sys::window() {
-                    if let Some(document) = window.document() {
-                        if let Some(element) = document.get_element_by_id(&id) {
-                            component.write().on_mount_with_element(element);
-                        }
-                    }
-                }
-            }
-        });
-        if *component.read() != state {
-            component.write().update(state);
-        }
-        component
+
+pub trait WebComponent: Sized + FromProperties<Self::Properties> {
+    type Properties: Properties;
+
+    fn instance(properties: &Self::Properties) -> Signal<Self> {
+        // let mut component = use_signal(|| {
+        //     let mut state = state.clone();
+        //     state.initialize();
+        //     state
+        // });
+        // use_effect(move || {
+        //     component.write().on_mount();
+        //     let id = component.write().id().clone();
+        //     if let Some(id) = id {
+        //         if let Some(window) = web_sys::window() {
+        //             if let Some(document) = window.document() {
+        //                 if let Some(element) = document.get_element_by_id(&id) {
+        //                     component.write().on_mount_with_element(element);
+        //                 }
+        //             }
+        //         }
+        //     }
+        // });
+        // if *component.read() != state {
+        //     component.write().update(state);
+        // }
+        // component
+        use_signal(|| Self::from_properties(properties.clone()))
     }
     fn initialize(&mut self) {
 
@@ -45,17 +50,16 @@ pub trait WebComponent: Sized + Clone + PartialEq + 'static {
         *self = state;
     }
     
-    fn render(component: Signal<Self>, state: Signal<Self::State>) -> Element;
+    fn render(component: Signal<Self>) -> Element;
 }
 
 #[macro_export]
 macro_rules! expose_component {
-    ($props:ident as $name:ident) => {
+    ($component:ident as $name:ident) => {
         #[component]
-        pub fn $name(props: $props) -> Element {
-            let component = $props::instance(props);
-            let state = use_signal(|| component.read().clone().into());
-            WebComponent::render(component, state)
+        pub fn $name(props: <$component as WebComponent>::Properties) -> Element {
+            let component = $component::instance(&props);
+            WebComponent::render(component)
         }
     };
 }

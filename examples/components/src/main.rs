@@ -2,13 +2,13 @@
 
 use web_component::prelude::*;
 
-#[derive(Clone, Debug, PartialEq, Props)]
+#[derive(Default)]
 struct ExampleAComponent {}
 
 impl WebComponent for ExampleAComponent {
-    type State = ();
+    type Properties = NoProperties;
 
-    fn render(_component: Signal<Self>, _state: Signal<Self::State>) -> Element {
+    fn render(_component: Signal<Self>) -> Element {
         rsx! {
             div {
                 "Example A"
@@ -17,32 +17,30 @@ impl WebComponent for ExampleAComponent {
     }
 }
 
-impl From<ExampleAComponent> for () {
-    fn from(_: ExampleAComponent) -> Self {
-        ()
-    }
-}
-
 expose_component!(ExampleAComponent as ExampleA);
 
-#[derive(Clone, Debug, PartialEq, Props)]
 struct ExampleBComponent {
+    properties: ExampleBComponentProperties,
+}
+
+#[derive(Clone, Debug, PartialEq, Props)]
+struct ExampleBComponentProperties {
     id: i32,
 }
 
-impl From<ExampleBComponent> for () {
-    fn from(_: ExampleBComponent) -> Self {
-        ()
+impl FromProperties<ExampleBComponentProperties> for ExampleBComponent {
+    fn from_properties(properties: ExampleBComponentProperties) -> Self {
+        ExampleBComponent { properties }
     }
 }
 
 impl WebComponent for ExampleBComponent {
-    type State = ();
+    type Properties = ExampleBComponentProperties;
 
-    fn render(component: Signal<Self>, _state: Signal<Self::State>) -> Element {
+    fn render(component: Signal<Self>) -> Element {
         rsx! {
             div {
-                "Example B: {component().id}"
+                "Example B: {component.read().properties.id}"
             }
         }
     }
