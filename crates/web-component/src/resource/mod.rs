@@ -1,7 +1,7 @@
 use std::{future::Future, sync::Arc};
 use tokio::sync::{Mutex, MutexGuard};
 
-use dioxus::signals::{Readable, Signal};
+use dioxus::{prelude::spawn, signals::{Readable, Signal, Writable}};
 use enum_as_inner::EnumAsInner;
 
 #[derive(Clone)]
@@ -75,6 +75,21 @@ impl<T> Resource<T> {
         })
     }
 
+    pub fn load_and_notify<C>(&mut self, mut component: Signal<C>, future: impl Future<Output = Option<T>> + 'static)
+    where T: 'static
+    {
+        let state = self.state.clone();
+        *state.blocking_lock() = ResourceState::Loading;
+        spawn(async move {
+            if let Some(value) = future.await {
+                *state.lock().await = ResourceState::Loaded(value);
+            } else {
+                *state.lock().await = ResourceState::Unavailable;
+            }
+            component.write();
+        });
+    }
+
     pub fn as_option(&self) -> Option<T>
     where T: Clone
     {
@@ -83,17 +98,6 @@ impl<T> Resource<T> {
             _ => None
         }
     }
-
-    // pub fn load_and_notify<C>(&mut self, mut component: Signal<C>, future: impl Future<Output = T> + 'static)
-    // where T: 'static
-    // {
-    //     let state = self.state.clone();
-    //     *state.blocking_lock() = ResourceState::Loading;
-    //     wasm_bindgen_futures::spawn_local(async move {
-    //         *state.lock().await = ResourceState::Loaded(future.await);
-    //         component.write();
-    //     })
-    // }
 }
 
 pub trait ResourceTrait<Component> {
@@ -109,7 +113,7 @@ impl<Component> ResourceTrait<Component> for Signal<Component> {
     where Type: Clone + 'static
     {
         let mut resource = f(&*self.read()).clone();
-        resource.load(future);
+        resource.load_and_notify(self.clone(), future);
     }
 
     fn acquire_resource<Type>(&self, mut f: impl FnMut(&Component) -> &Resource<Type>, future: impl Future<Output = Option<Type>> + 'static) -> ResourceState<Type>
