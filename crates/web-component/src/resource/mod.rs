@@ -101,6 +101,12 @@ pub trait ResourceTrait<Component> {
 
     fn acquire_resource<Type>(&self, f: impl FnMut(&Component) -> &Resource<Type>, future: impl Future<Output = Option<Type>> + 'static) -> ResourceState<Type>
     where Type: Clone + 'static;
+
+    fn web_get<Type>(&self, f: impl FnMut(&Component) -> &Resource<Type>, url: String) -> ResourceState<Type>
+    where Type: Clone + 'static + serde::de::DeserializeOwned;
+
+    fn web_post<Type>(&self, f: impl FnMut(&Component) -> &Resource<Type>, url: String, body: impl serde::Serialize + 'static) -> ResourceState<Type>
+    where Type: Clone + 'static + serde::de::DeserializeOwned;
 }
 
 impl<Component> ResourceTrait<Component> for Signal<Component> {
@@ -117,6 +123,45 @@ impl<Component> ResourceTrait<Component> for Signal<Component> {
         let resource = f(&*self.read()).clone();
         if resource.is_unloaded() {
             self.update_resource(f, future);
+        }
+        let x = resource.get_state().clone();
+        x
+    }
+
+    fn web_get<Type>(&self, mut f: impl FnMut(&Component) -> &Resource<Type>, url: String) -> ResourceState<Type>
+    where Type: Clone + 'static + serde::de::DeserializeOwned
+    {
+        let resource = f(&*self.read()).clone();
+        if resource.is_unloaded() {
+            self.update_resource(f, async move {
+                reqwest::get(url)
+                    .await
+                    .ok()?
+                    .json::<Type>()
+                    .await
+                    .ok()
+            });
+        }
+        let x = resource.get_state().clone();
+        x
+        }
+
+    fn web_post<Type>(&self, mut f: impl FnMut(&Component) -> &Resource<Type>, url: String, body: impl serde::Serialize + 'static) -> ResourceState<Type>
+    where Type: Clone + 'static + serde::de::DeserializeOwned
+    {
+        let resource = f(&*self.read()).clone();
+        if resource.is_unloaded() {
+            self.update_resource(f, async move {
+                reqwest::Client::new()
+                    .post(url)
+                    .json(&body)
+                    .send()
+                    .await
+                    .ok()?
+                    .json::<Type>()
+                    .await
+                    .ok()
+            });
         }
         let x = resource.get_state().clone();
         x
