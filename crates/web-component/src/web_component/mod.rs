@@ -3,9 +3,8 @@ use crate::prelude::*;
 mod properties;
 pub use properties::*;
 
-
 pub trait WebComponent: Sized + FromProperties<Self::Properties> {
-    type Properties: Properties;
+    type Properties: Properties + PartialEq + std::fmt::Debug;
 
     fn instance(properties: &Self::Properties) -> Signal<Self> {
         // let mut component = use_signal(|| {
@@ -30,7 +29,16 @@ pub trait WebComponent: Sized + FromProperties<Self::Properties> {
         //     component.write().update(state);
         // }
         // component
-        use_signal(|| Self::from_properties(properties.clone()))
+        let input_properties = properties;
+        let mut properties = use_signal(|| input_properties.clone());
+        let mut component = use_signal(|| Self::from_properties(input_properties.clone()));
+        use_effect(capture!(input_properties => move || {
+            if properties.read().to_owned() != input_properties {
+                *properties.write() = input_properties.clone();
+                *component.write() = Self::from_properties(input_properties.clone());
+            }
+        }));
+        component
     }
     fn initialize(&mut self) {
 

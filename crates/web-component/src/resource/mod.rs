@@ -88,13 +88,10 @@ impl<T> Resource<T> {
         });
     }
 
-    pub fn as_option(&self) -> Option<T>
+    pub fn as_loaded(&self) -> Option<T>
     where T: Clone
     {
-        match self.state.blocking_lock().clone() {
-            ResourceState::Loaded(value) => Some(value),
-            _ => None
-        }
+        self.state.blocking_lock().as_loaded().cloned()
     }
 }
 
