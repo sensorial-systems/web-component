@@ -66,12 +66,12 @@ impl<T> Resource<T> {
     {
         let state = self.state.clone();
         *state.blocking_lock() = ResourceState::Loading;
-        wasm_bindgen_futures::spawn_local(async move {
+        spawn(async move {
             *state.lock().await = future
                 .await
                 .map(ResourceState::Loaded)
                 .unwrap_or(ResourceState::Unavailable);
-        })
+        });
     }
 
     pub fn load_and_notify<C>(&mut self, mut component: Signal<C>, future: impl Future<Output = Option<T>> + 'static)
