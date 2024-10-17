@@ -10,8 +10,11 @@ impl WebComponent for ExampleAComponent {
 
     fn render(_component: Signal<Self>) -> Element {
         rsx! {
-            div {
-                "Example A"
+            style { { include_str!("style.css") } }
+            div { class: "container",
+                div { class: "top" }
+                div { class: "middle" }
+                div { class: "bottom" }
             }
         }
     }
