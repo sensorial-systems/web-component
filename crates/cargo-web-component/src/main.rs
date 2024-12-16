@@ -92,7 +92,7 @@ async fn process_new_command(opts: NewArgs) -> Result<StructuredOutput> {
     std::fs::create_dir_all(path.join("src/logo")).unwrap();
     std::fs::create_dir_all(path.join("src/navigation_bar")).unwrap();
     std::fs::create_dir_all(path.join("src/parameterized_route")).unwrap();
-    std::fs::write(path.join("Cargo.toml"), format!(include_str!("templates/project/Cargo.toml"), NAME = opts.name, VERSION = env!("CARGO_PKG_VERSION"))).unwrap();
+    std::fs::write(path.join("Cargo.toml"), format!(include_str!("templates/project/Cargo.toml.template"), NAME = opts.name, VERSION = env!("CARGO_PKG_VERSION"))).unwrap();
     std::fs::write(path.join("Dioxus.toml"), format!(include_str!("templates/project/Dioxus.toml"), NAME = opts.name)).unwrap();
     std::fs::write(path.join(".gitignore"), include_str!("templates/project/.gitignore")).unwrap();
     std::fs::write(path.join("src/main.rs"), include_str!("templates/project/src/main.rs")).unwrap();
