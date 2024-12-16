@@ -1,4 +1,4 @@
-#![doc = "../../README.md"]
+#![doc = include_str!("../../../../README.md")]
 
 use dioxus_cli::{StructuredOutput, link, Result};
 use clap::Parser;
@@ -89,6 +89,7 @@ enum Commands {
 
 async fn process_new_command(opts: NewArgs) -> Result<StructuredOutput> {
     let path = std::path::Path::new(&opts.name);
+    std::fs::create_dir_all(path.join("assets")).unwrap();
     std::fs::create_dir_all(path.join("src/logo")).unwrap();
     std::fs::create_dir_all(path.join("src/navigation_bar")).unwrap();
     std::fs::create_dir_all(path.join("src/parameterized_route")).unwrap();

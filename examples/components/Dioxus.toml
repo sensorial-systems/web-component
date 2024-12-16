@@ -1,11 +1,11 @@
 [application]
-name = "components-examples"
+name = "components"
 default_platform = "web"
 out_dir = "dist"
 asset_dir = "assets"
 
 [web.app]
-title = "components-examples"
+title = "components"
 
 [web.watcher]
 reload_html = true
