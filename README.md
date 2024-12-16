@@ -4,7 +4,7 @@ Rust crate for creating WebComponents
 # Installation
 
 ```bash
-cargo install cargo-web-component
+cargo install cargo-web-component --git https://github.com/sensorial-systems/web-component
 ```
 
 # Usage
