@@ -1,0 +1,10 @@
+[package]
+name = "cargo-web-component"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { workspace = true }
+tracing = { workspace = true }
+dioxus-cli = { git = "https://github.com/notdanilo/dioxus.git", branch = "feature/dioxus-cli-as-lib" }
+clap = "4.5.7"
