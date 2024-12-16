@@ -2,71 +2,27 @@
 
 use web_component::prelude::*;
 
-#[derive(Default)]
-struct ExampleAComponent {}
+mod navigation_bar;
+mod logo;
+mod parameterized_route;
 
-impl WebComponent for ExampleAComponent {
-    type Properties = NoProperties;
-
-    fn render(_component: Signal<Self>) -> Element {
-        rsx! {
-            style { { include_str!("style.css") } }
-            div { class: "container",
-                div { class: "top" }
-                div { class: "middle" }
-                div { class: "bottom" }
-            }
-        }
-    }
-}
-
-expose_component!(ExampleAComponent as ExampleA);
-
-struct ExampleBComponent {
-    properties: ExampleBComponentProperties,
-}
-
-#[derive(Clone, Debug, PartialEq, Props)]
-struct ExampleBComponentProperties {
-    id: i32,
-}
-
-impl FromProperties<ExampleBComponentProperties> for ExampleBComponent {
-    fn from_properties(properties: ExampleBComponentProperties) -> Self {
-        ExampleBComponent { properties }
-    }
-}
-
-impl WebComponent for ExampleBComponent {
-    type Properties = ExampleBComponentProperties;
-
-    fn render(component: Signal<Self>) -> Element {
-        rsx! {
-            div {
-                "Example B: {component.read().properties.id}"
-            }
-        }
-    }
-}
-
-expose_component!(ExampleBComponent as ExampleB);
+use logo::Logo;
+use parameterized_route::ParameterizedRoute;
 
 #[derive(Clone, Routable, Debug, PartialEq)]
 enum Examples {
     #[route("/")]
-    ExampleA {},
+    Logo {},
     #[route("/b/:id")]
-    ExampleB { id: i32 },
+    ParameterizedRoute { id: i32 },
 }
-
-
-fn main() {
-    launch(App);
-}
-
 
 fn App() -> Element {
     rsx! {
         Router::<Examples> {}
     }
+}
+
+fn main() {
+    launch(App);
 }

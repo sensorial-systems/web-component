@@ -7,6 +7,9 @@ use clap::Parser;
 struct Args {
     #[command(subcommand)]
     command: Commands,
+
+    #[command(flatten)]
+    pub verbosity: dioxus_cli::Verbosity,
 }
 
 #[derive(Parser)]
@@ -32,6 +35,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     let args = Args::parse();
+
+    dioxus_cli::VERBOSITY.set(args.verbosity).expect("Failed to set verbosity");
 
     let commands = match args.command {
         Commands::Dioxus(dioxus) => dioxus,
