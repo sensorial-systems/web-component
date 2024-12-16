@@ -1,3 +1,5 @@
+#![doc = "../../README.md"]
+
 pub mod prelude;
 
 pub use dioxus_logger as logger;

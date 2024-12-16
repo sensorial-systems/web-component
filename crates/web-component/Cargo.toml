@@ -1,7 +1,13 @@
 [package]
 name = "web-component"
-version = "0.1.0"
-edition = "2021"
+version.workspace = true
+edition.workspace = true
+description.workspace = true
+license-file.workspace = true
+readme.workspace = true
+documentation.workspace = true
+homepage.workspace = true
+repository.workspace = true
 
 [features]
 default = ["web"]
