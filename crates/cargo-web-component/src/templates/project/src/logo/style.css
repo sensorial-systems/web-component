@@ -1,0 +1,36 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vh; /* Make it squared by setting width equal to height */
+    max-width: 100vw; /* Ensure it doesn't overflow on smaller screens */
+    max-height: 100vw; /* Ensure it doesn't overflow on smaller screens */
+    aspect-ratio: 1 / 1; /* Maintain square aspect ratio */
+}
+
+.top {
+    display: flex;
+    width: 300px;
+    height: 90px;
+    background-color: black;
+    border-top-left-radius: 100px;
+}
+
+.middle {
+    display: flex;
+    width: 300px;
+    height: 90px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background-color: black;
+}
+
+.bottom {
+    display: flex;
+    width: 300px;
+    height: 90px;
+    border-bottom-right-radius: 100px;
+    background-color: black;
+}	

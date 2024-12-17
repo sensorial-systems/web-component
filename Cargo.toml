@@ -1,17 +1,42 @@
 [workspace]
 resolver = "2"
 members = [
+    "crates/cargo-web-component",
     "crates/web-component",
     "examples/components"
 ]
 
+[workspace.package]
+version = "0.1.11"
+edition = "2021"
+license-file = "LICENSE"
+readme = "README.md"
+description = "A tool to create web components using Dioxus"
+documentation = "https://docs.rs/web-component"
+homepage = "https://github.com/sensorial-systems/web-component"
+repository = "https://github.com/sensorial-systems/web-component"
+
 [workspace.dependencies]
 web-component = { path = "crates/web-component" }
-dioxus = { version = "0.5", features = ["web", "router"] }
-dioxus-logger = "0.5"
+dioxus = { version = "0.6", features = ["web", "router"] }
+dioxus-logger = "0.6"
 wasm-bindgen-futures = "0.4.0"
 web-sys = { version = "0.3", features = ["console", "Window", "Document", "Element"] }
 enum-as-inner = "0.6.1"
 tokio = { version = "1", features = ["sync"]}
 reqwest = { version = "0.12", default-features = false, features = ["json"] }
 serde = "1.0"
+tracing = "0.1.37"
+
+[profile]
+
+[profile.wasm-dev]
+inherits = "dev"
+opt-level = 1
+
+[profile.server-dev]
+inherits = "dev"
+
+[profile.android-dev]
+inherits = "dev"
+

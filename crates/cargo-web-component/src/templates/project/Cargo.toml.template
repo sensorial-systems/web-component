@@ -1,0 +1,8 @@
+[package]
+name = "{NAME}"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+web-component = {{ version = "{VERSION}", features = ["web"] }}
+dioxus = {{ version = "0.6", features = ["web", "router"] }}
