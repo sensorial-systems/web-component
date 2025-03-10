@@ -10,7 +10,8 @@ homepage.workspace = true
 repository.workspace = true
 
 [dependencies]
-tokio = { workspace = true }
+tokio = { workspace = true, features = ["full"] }
 tracing = { workspace = true }
-dioxus-cli = { version = "0.6", git = "https://github.com/notdanilo/dioxus.git", branch = "feature/dioxus-cli-as-lib" }
-clap = "4.5.7"
+clap = { workspace = true }
+anyhow = { workspace = true }
+which = { workspace = true }

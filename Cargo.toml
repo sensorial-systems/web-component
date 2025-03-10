@@ -18,15 +18,18 @@ repository = "https://github.com/sensorial-systems/web-component"
 
 [workspace.dependencies]
 web-component = { path = "crates/web-component" }
-dioxus = { version = "0.6", features = ["web", "router"] }
-dioxus-logger = "0.6"
-wasm-bindgen-futures = "0.4.0"
-web-sys = { version = "0.3", features = ["console", "Window", "Document", "Element"] }
-enum-as-inner = "0.6.1"
-tokio = { version = "1", features = ["sync"]}
-reqwest = { version = "0.12", default-features = false, features = ["json"] }
-serde = "1.0"
+dioxus = { version = "=0.6.3", features = ["web", "router"] }
+dioxus-logger = "=0.6.2"
+wasm-bindgen-futures = "=0.4.50"
+web-sys = { version = "=0.3", features = ["console", "Window", "Document", "Element"] }
+enum-as-inner = "=0.6.1"
+tokio = { version = "=1", features = ["sync"]}
+reqwest = { version = "=0.12", default-features = false, features = ["json"] }
+serde = { version = "=1.0", features = ["derive"] }
 tracing = "0.1.37"
+clap = { version = "=4.5.7", features = ["derive"] }
+anyhow = "1.0.74"
+which = "7.0.2"
 
 [profile]
 
