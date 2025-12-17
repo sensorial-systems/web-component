@@ -5,9 +5,7 @@ Rust crate for creating WebComponents
 
 ## General requirements
 
-- Cargo 1.84.1
-- Rust 1.84.1
-- cargo install dioxus-cli --version 0.6.3
+- cargo install dioxus-cli --version 0.7.2
 
 ## Install cargo-web-component
 
