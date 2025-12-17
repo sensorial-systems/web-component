@@ -1,6 +1,8 @@
 pub use dioxus;
 pub use dioxus::prelude::*;
 
+pub(crate) use dioxus::core::Properties;
+
 pub use crate::{WebComponent, Resource, ResourceTrait, FromProperties, NoProperties};
 pub use crate::{capture, capture_async, event, expose_component};
 pub use crate::logger::tracing as log;

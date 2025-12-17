@@ -1,7 +1,7 @@
 use std::{future::Future, sync::Arc};
 use tokio::sync::{Mutex, MutexGuard};
 
-use dioxus::{prelude::spawn, signals::{Readable, Signal, Writable}};
+use dioxus::{prelude::spawn, signals::{ReadableExt, Signal, WritableExt}};
 use enum_as_inner::EnumAsInner;
 
 #[derive(Clone)]
@@ -57,7 +57,7 @@ impl<T> Resource<T> {
         self.state.blocking_lock().is_unloaded()
     }
 
-    pub fn get_state(&self) -> MutexGuard<ResourceState<T>> {
+    pub fn get_state(&self) -> MutexGuard<'_, ResourceState<T>> {
         self.state.blocking_lock()
     }
 
@@ -75,7 +75,7 @@ impl<T> Resource<T> {
     }
 
     pub fn load_and_notify<C>(&mut self, mut component: Signal<C>, future: impl Future<Output = Option<T>> + 'static)
-    where T: 'static
+    where T: 'static, C: 'static
     {
         let state = self.state.clone();
         *state.blocking_lock() = ResourceState::Loading;
@@ -97,28 +97,28 @@ impl<T> Resource<T> {
 
 pub trait ResourceTrait<Component> {
     fn update_resource<Type>(&self, f: impl FnOnce(&Component) -> &Resource<Type>, future: impl Future<Output = Option<Type>> + 'static)
-    where Type: Clone + 'static;
+    where Type: Clone + 'static, Component: 'static;
 
     fn acquire_resource<Type>(&self, f: impl FnMut(&Component) -> &Resource<Type>, future: impl Future<Output = Option<Type>> + 'static) -> ResourceState<Type>
-    where Type: Clone + 'static;
+    where Type: Clone + 'static, Component: 'static;
 
     fn web_get<Type>(&self, f: impl FnMut(&Component) -> &Resource<Type>, url: String) -> ResourceState<Type>
-    where Type: Clone + 'static + serde::de::DeserializeOwned;
+    where Type: Clone + 'static + serde::de::DeserializeOwned, Component: 'static;
 
     fn web_post<Type>(&self, f: impl FnMut(&Component) -> &Resource<Type>, url: String, body: impl serde::Serialize + 'static) -> ResourceState<Type>
-    where Type: Clone + 'static + serde::de::DeserializeOwned;
+    where Type: Clone + 'static + serde::de::DeserializeOwned, Component: 'static;
 }
 
 impl<Component> ResourceTrait<Component> for Signal<Component> {
     fn update_resource<Type>(&self, f: impl FnOnce(&Component) -> &Resource<Type>, future: impl Future<Output = Option<Type>> + 'static)
-    where Type: Clone + 'static
+    where Type: Clone + 'static, Component: 'static
     {
         let mut resource = f(&*self.read()).clone();
         resource.load_and_notify(self.clone(), future);
     }
 
     fn acquire_resource<Type>(&self, mut f: impl FnMut(&Component) -> &Resource<Type>, future: impl Future<Output = Option<Type>> + 'static) -> ResourceState<Type>
-        where Type: Clone + 'static
+        where Type: Clone + 'static, Component: 'static
     {
         let resource = f(&*self.read()).clone();
         if resource.is_unloaded() {
@@ -129,7 +129,7 @@ impl<Component> ResourceTrait<Component> for Signal<Component> {
     }
 
     fn web_get<Type>(&self, mut f: impl FnMut(&Component) -> &Resource<Type>, url: String) -> ResourceState<Type>
-    where Type: Clone + 'static + serde::de::DeserializeOwned
+    where Type: Clone + 'static + serde::de::DeserializeOwned, Component: 'static
     {
         let resource = f(&*self.read()).clone();
         if resource.is_unloaded() {
@@ -147,7 +147,7 @@ impl<Component> ResourceTrait<Component> for Signal<Component> {
         }
 
     fn web_post<Type>(&self, mut f: impl FnMut(&Component) -> &Resource<Type>, url: String, body: impl serde::Serialize + 'static) -> ResourceState<Type>
-    where Type: Clone + 'static + serde::de::DeserializeOwned
+    where Type: Clone + 'static + serde::de::DeserializeOwned, Component: 'static
     {
         let resource = f(&*self.read()).clone();
         if resource.is_unloaded() {

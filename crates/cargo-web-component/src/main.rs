@@ -47,6 +47,8 @@ async fn process_new_command(opts: NewArgs) -> Result<()> {
 async fn process_serve_command() -> Result<()> {
     let status = tokio::process::Command::new("dx")
         .arg("serve")
+        .args(["--target", "wasm32-unknown-unknown"])
+        .args(["--bundle", "web"])
         .status()
         .await
         .context("Failed to spawn dioxus command")?;

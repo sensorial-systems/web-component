@@ -6,29 +6,7 @@ pub use properties::*;
 pub trait WebComponent: Sized + FromProperties<Self::Properties> {
     type Properties: Properties + PartialEq + std::fmt::Debug;
 
-    fn instance(properties: &Self::Properties) -> Signal<Self> {
-        // let mut component = use_signal(|| {
-        //     let mut state = state.clone();
-        //     state.initialize();
-        //     state
-        // });
-        // use_effect(move || {
-        //     component.write().on_mount();
-        //     let id = component.write().id().clone();
-        //     if let Some(id) = id {
-        //         if let Some(window) = web_sys::window() {
-        //             if let Some(document) = window.document() {
-        //                 if let Some(element) = document.get_element_by_id(&id) {
-        //                     component.write().on_mount_with_element(element);
-        //                 }
-        //             }
-        //         }
-        //     }
-        // });
-        // if *component.read() != state {
-        //     component.write().update(state);
-        // }
-        // component
+    fn instance(properties: &Self::Properties) -> Signal<Self> where Self: 'static {
         let input_properties = properties;
         let mut properties = use_signal(|| input_properties.clone());
         let mut component = use_signal(|| Self::from_properties(input_properties.clone()));
